@@ -6,6 +6,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 
+#include "FPSCharacter.h"
+
 AFPSProjectile::AFPSProjectile() 
 {
 	// Use a sphere as a simple collision representation
@@ -59,8 +61,8 @@ void AFPSProjectile::Explode()
 void AFPSProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	// Only add impulse and destroy projectile if we hit a physics object
-	if ((OtherActor) && (OtherActor != this) && (OtherComp) && OtherComp->IsSimulatingPhysics())
-	{
+	if ((OtherActor) && (OtherActor != this) && (OtherComp) && OtherComp->IsSimulatingPhysics()) {
+
 		float RandomIntensity = FMath::RandRange(200.0f, 500.0f);
 
 		OtherComp->AddImpulseAtLocation(GetVelocity() * RandomIntensity, GetActorLocation());
@@ -68,21 +70,30 @@ void AFPSProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPr
 		FVector Scale = OtherComp->GetComponentScale();
 		Scale *= 0.8f;
 
-		if (Scale.GetMin() < 0.5f)
-		{
+		if (Scale.GetMin() < 0.5f) {
 			OtherActor->Destroy();
-		}
-		else
-		{
+		} else {
 			OtherComp->SetWorldScale3D(Scale);
 		}
 
 		UMaterialInstanceDynamic* MatInst = OtherComp->CreateDynamicMaterialInstance(0);
-		if (MatInst)
-		{
+		if (MatInst) {
 			MatInst->SetVectorParameterValue("Color", FLinearColor::MakeRandomColor());
-		}
+	    }
 
 		Explode();
+	}
+
+	if ((OtherActor) && (OtherActor != this) && (OtherComp)) {
+	
+		AFPSCharacter* mCharacter = Cast<AFPSCharacter>(OtherActor);
+
+		if (mCharacter) {
+		
+			if (GetLocalRole() == ROLE_Authority) {
+			
+				mCharacter->CurrentHealth -= 10; // damage taken on server which has authority.
+			}
+		}
 	}
 }

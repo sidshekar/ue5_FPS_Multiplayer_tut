@@ -85,6 +85,9 @@ public:
 
 	virtual void OnJumped_Implementation() override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
+	float CurrentHealth;
+
 protected:
 	
 	/** Fires a projectile. */
