@@ -32,7 +32,7 @@ AObjective::AObjective() {
 
 	if (HasAuthority()) {
 		SetReplicates(true);
-		//SetReplicateMovement(true);
+		SetReplicateMovement(true);
 	}
 
 }

@@ -145,6 +145,7 @@ void AFPSCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AFPSCharacter, CurrentHealth);
+	DOREPLIFETIME(AFPSCharacter, bIsCarryingObjective);
 
 }
 
